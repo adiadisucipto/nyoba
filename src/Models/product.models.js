@@ -1,6 +1,7 @@
 const db = require("../Configs/postgre")
 
-const data = () => {
+const data = (page = 1, perPage = 5) => {
+    const offset = (page - 1) * perPage
     const sql = "select * from coffeshop.product"
     return db.query(sql)
 }

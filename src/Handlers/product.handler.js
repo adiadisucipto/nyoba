@@ -4,13 +4,7 @@ const getData = async (req, res) => {
     try {
         const {page, perPage} = req.query
 
-        const a = page || 1
-        const b = perPage || 5
-
-        const startIndex = (a - 1) * b
-        const endIndex = startIndex + b
-
-        const result = await data()
+        const result = await data(page, perPage)
 
         res.status(200).json({
             result: result.rows.slice(startIndex, endIndex),
@@ -46,7 +40,7 @@ const updateData = async (req, res) => {
         await update(stock, id_product)
 
         if(!id_product){
-            throw new Error(`id ${id_product} tidak ditemukan`)
+            throw new Error(`id ${id_product} tidak diberikan`)
         }
 
         res.status(201).json({
@@ -65,7 +59,7 @@ const deleteData = async (req, res) => {
         await del(id_product)
 
         if(!id_product){
-            throw new Error(`id ${id_product} tidak ditemukan`)
+            throw new Error(`id ${id_product} tidak diberikan`)
         }
 
         res.status(201).json({

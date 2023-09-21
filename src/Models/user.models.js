@@ -7,7 +7,7 @@ const data = () => {
 
 const insert = (full_name, email, phone, password) => {
     const value = [full_name, email, phone, password]
-    const sql = `insert into coffeshop.user (full_name, email, phone, password) values ($1, $2, $3, $4)`
+    const sql = `insert into coffeshop.user (full_name, email, phone, password) values ($1, $2, $3, $4) returning id_user`
     return db.query(sql, value)
 }
 
