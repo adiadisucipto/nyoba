@@ -1,9 +1,18 @@
 const db = require("../Configs/postgre")
 
-const data = (page = 1, perPage = 5) => {
+const data = async (page = 1, perPage = 5) => {
     const offset = (page - 1) * perPage
-    const sql = "select * from coffeshop.product"
-    return db.query(sql)
+    const sql = `select * from coffeshop.product order by id_product asc limit $1 offset $2`
+    const value = [perPage, offset]
+    const count = await db.query(`select count(id_product) from coffeshop.product`)
+    const totalData = count.rows[0].count
+    const result = await db.query(sql, value)
+    const meta = {
+        next: result.rowCount == 0 ? null: totalData == 0 ? null : page == Math.ceil(totalData/perPage) ? null : Number(page) + 1,
+        prev: result.rowCount == 0 ? null : page == 1 ? null : (page - 1),
+        total: totalData
+    }
+    return {result: result.rows, meta}
 }
 
 const create = (image, product_name, description, stock, category) => {
@@ -30,13 +39,11 @@ const search = (product_name) => {
     return db.query(sql, value)
 }
 
-const sortName = () => {
-    const sql = "select product_name, price from coffeshop.product p join coffeshop.product_size ps on p.id_product = ps.id_product order by product_name asc"
-    return db.query(sql)
-}
-
-const sortPrice = () => {
-    const sql = "select product_name, price from coffeshop.product p join coffeshop.product_size ps on p.id_product = ps.id_product"
+const sort = (sortBy, order) => {
+    let sortOrder = order === 'desc' ? 'desc' : 'asc'
+    let sort = sortBy === 'price' ? 'price' : 'product_name'
+    const sql = `select product_name, price
+    from coffeshop.product p join coffeshop.product_size ps on p.id_product = ps.id_product order by ${sort} ${sortOrder}`
     return db.query(sql)
 }
 
@@ -51,7 +58,6 @@ module.exports = {
     update,
     del,
     search,
-    sortName,
-    sortPrice,
+    sort,
     sortTime
 }

@@ -1,15 +1,16 @@
-const {data, create, update, del, search, sortName, sortPrice, sortTime} = require("../Models/product.models")
+const {data, create, update, del, search, sort, sortTime} = require("../Models/product.models")
 
 const getData = async (req, res) => {
     try {
         const {page, perPage} = req.query
 
-        const result = await data(page, perPage)
+        const {result, meta} = await data(page, perPage)
+
+        console.log(result)
 
         res.status(200).json({
-            result: result.rows.slice(startIndex, endIndex),
-            currentPage : a,
-            totalPage: Math.ceil(result.rows.length / b)
+            result: result.length == 0 ? "Halaman tidak ditemukan" : result,
+            meta: meta
         })
     } catch (error) {
         console.log(error)
@@ -88,37 +89,15 @@ const searchProduct = async (req, res) => {
     }
 }
 
-const sortProductName = async (req, res) => {
+const sortBy = async (req, res) => {
     try {
-        const {page, perPage} = req.query
-
-        const a = page || 1
-        const b = perPage || 5
-
-        const startIndex = (a - 1) * b
-        const endIndex = startIndex + b
-
-        const result = await sortName()
+        const {sortBy, order} = req.query
+        const result =  await sort(sortBy, order)
         res.status(201).json({
-            result: result.rows.slice(startIndex, endIndex),
-            currentPage: a,
-            totalPage: Math.ceil(result.rows.length / b)
+            result: result.rows
         })
     } catch (error) {
         console.log(error)
-        res.status(500).json({
-            msg: "Error"
-        })
-    }
-}
-
-const sortPriceProduct = async (req, res) => {
-    try {
-        const result = await sortPrice()
-        res.status(200).json({
-            result: result.rows.sort((a, b) => {return a.price - b.price})
-        })
-    } catch (error) {
         res.status(500).json({
             msg: "Error"
         })
@@ -144,7 +123,6 @@ module.exports = {
     updateData,
     deleteData,
     searchProduct,
-    sortProductName,
-    sortPriceProduct,
+    sortBy,
     sortByTime
 }
