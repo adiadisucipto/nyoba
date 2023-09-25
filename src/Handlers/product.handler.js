@@ -1,18 +1,34 @@
-const {data, create, update, del, search, sort, sortTime} = require("../Models/product.models")
+const {data, create, update, del, sort, sortTime, count} = require("../Models/product.models")
 
 const getData = async (req, res) => {
     try {
         const {page, perPage} = req.query
+        const result = await data(page, perPage)
 
-        const {result, meta} = await data(page, perPage)
+        if(!result.rows.length) return res.status(404).json({
+            msg: "Halaman tidak ditemukan"
+        })
 
-        console.log(result)
+        const metaResult = await count()
+
+        const totalData = parseInt(metaResult.rows[0].total_data)
+        const totalPage = Math.ceil(totalData / perPage)
+        const isLastPage = parseInt(page) > totalPage
+
+        const meta = {
+            page: parseInt(page),
+            totalPage,
+            totalData,
+            next: isLastPage ? null : "next page",
+            prev: page == 1 ? null : "prev page"
+        }
 
         res.status(200).json({
-            result: result.length == 0 ? "Halaman tidak ditemukan" : result,
-            meta: meta
+            msg: "Behasil",
+            result: result.rows,
+            meta
         })
-    } catch (error) {
+    } catch (error) { 
         console.log(error)
         res.status(500).json({
             msg: "Error"
@@ -36,9 +52,9 @@ const createData = async (req, res) => {
 
 const updateData = async (req, res) => {
     try {
-        const {stock} = req.body
+        const data = req.body
         const {id_product} = req.params
-        await update(stock, id_product)
+        await update(data, id_product)
 
         if(!id_product){
             throw new Error(`id ${id_product} tidak diberikan`)
@@ -48,6 +64,7 @@ const updateData = async (req, res) => {
             msg: `Stock produk dengan id ${id_product} berhasil diubah`
         })
     } catch (error) {
+        console.log(error)
         res.status(500).json({
             msg: "Error"
         })
@@ -65,22 +82,6 @@ const deleteData = async (req, res) => {
 
         res.status(201).json({
             msg: `Produk dengan id ${id_product} berhasil dihapus`
-        })
-    } catch (error) {
-        res.status(500).json({
-            msg: "Error"
-        })
-    }
-}
-
-const searchProduct = async (req, res) => {
-    try {
-        const {product_name} = req.query
-        const result = await search(product_name)
-
-        res.status(200).json({
-            msg: "Berhasil",
-            result: result.rows
         })
     } catch (error) {
         res.status(500).json({
@@ -122,7 +123,6 @@ module.exports = {
     createData,
     updateData,
     deleteData,
-    searchProduct,
     sortBy,
     sortByTime
 }

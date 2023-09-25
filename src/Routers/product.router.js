@@ -7,7 +7,6 @@ productRouter.get("/", getData)
 productRouter.post("/", createData)
 productRouter.patch("/:id_product", updateData)
 productRouter.delete("/:id_product", deleteData)
-productRouter.get("/search", searchProduct)
 productRouter.get("/sort_price", sortBy)
 productRouter.get("/sort_time", sortByTime)
 
