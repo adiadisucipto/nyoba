@@ -1,28 +1,10 @@
 const db = require("../Configs/postgre")
-const escape = require("pg-format")
 
 const data = async (page = 1, perPage = 5) => {
     const offset = (page - 1) * perPage
     const value = [perPage, offset]
     const sql = "select product_name, stock, category from coffeshop.product limit $1 offset $2"
     return db.query(sql, value)
-    // let query = ""
-    // if (product_name != ""){
-    //     product_name = `%${product_name}%`
-    //     query = escape(`where product_name ilike %L`, product_name)
-    // }
-    // const offset = (page - 1) * perPage
-    // const sql = `select * from coffeshop.product ${query} order by id_product asc limit $1 offset $2`
-    // const value = [perPage, offset]
-    // const count = await db.query(`select count(id_product) from coffeshop.product ${query}`)
-    // const totalData = count.rows[0].count
-    // const result = await db.query(sql, value)
-    // const meta = {
-    //     next: result.rowCount == 0 ? null: totalData == 0 ? null : page == Math.ceil(totalData/perPage) ? null : Number(page) + 1,
-    //     prev: result.rowCount == 0 ? null : page == 1 ? null : (page - 1),
-    //     total: totalData
-    // }
-    // return {result: result.rows, meta}
 }
 
 const count = () => {
@@ -38,22 +20,15 @@ const create = (image, product_name, description, stock, category) => {
 
 const update = (data, id_product) => {
     let values = []
-    let i = 0
     let updates = []
-    Object.keys(data).forEach((key)=>{
-        console.log(key, ":", data[key])
-        if(data[key] !== undefined && data[key] !=''){
-            updates.push(`${key} = $${i+1}`)
-            values.push(data[key])
-            i++
-        }
-      })
-    values.push(id_product)
-    console.log(i)
-    console.log(values)
-    console.log(updates)
-    console.log(data)
-    const sql = `update coffeshop.product set ${updates.join(", ")} where id_product = $${i+1}`
+    const datas = Object.keys(data).length
+    for(let j = 0; j < datas; j++){
+        values.push(Object.values(data)[j])
+        const key = Object.keys(data)[j]
+        updates.push(`${key} = $${j + 1}`)
+    }
+    console.log(updates.join(", "))
+    const sql = `update coffeshop.product set ${updates.join(", ")} where id_product = ${id_product}`
     return db.query(sql, values)
 }
 

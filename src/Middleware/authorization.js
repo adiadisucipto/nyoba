@@ -2,8 +2,6 @@ const jwt = require("jsonwebtoken")
 const { jwtKey, issuer } = require("../Configs/environment")
 const db = require("../Configs/postgre")
 
-const {role} = require("../Models/authorization.models")
-
 const isLogin = (req, res, next) => {
     const bearerToken = req.header("Authorization")
     const token = bearerToken.split(" ")[1]

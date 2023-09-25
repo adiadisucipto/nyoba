@@ -33,11 +33,19 @@ const createData = async (req, res) => {
 
 const updateData = async (req, res) => {
     try {
-        const {status} = req.body
+        const datas = req.body
         const {id_order} = req.params
-        await update(status, id_order)
-        res.status(201).json({
-            msg: "Berhasil"
+        await update(datas, id_order)
+        const Result = await data()
+        for(let i = 0; i < (Result.rows).length; i++){
+            if(Result.rows[i].id_order == id_order){
+                return res.status(201).json({
+                    msg: `Data order dengan id ${id_order} berhasil diubah`,
+                })
+            }
+        }
+        res.status(400).json({
+            msg: "ID order tidak ditemukan"
         })
     } catch (error) {
         console.log(error)
@@ -51,8 +59,16 @@ const delData = async (req, res) => {
     try {
         const {id_order} = req.params
         await del(id_order)
-        res.status(201).json({
-            msg: "Berhasil"
+        const Result = await data()
+        for(let i = 0; i < (Result.rows).length; i++){
+            if(Result.rows[i].id_order == id_order){
+                return res.status(201).json({
+                    msg: `Data order dengan id ${id_order} berhasil dihapus`,
+                })
+            }
+        }
+        res.status(400).json({
+            msg: "ID order tidak ditemukan"
         })
     } catch (error) {
         res.status()        

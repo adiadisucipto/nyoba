@@ -11,15 +11,23 @@ const create = (id_user, no_order, date_order, stat, total) => {
     return db.query(sql, value)
 }
 
-const update = (status, id_order) => {
-    const value = [status, id_order]
-    const sql = "update coffeshop.order set status = $1 where id_order = $2"
-    return db.query(sql, value)
+const update = (datas, id_order) => {
+    const values = []
+    const updates = []
+    const totalData = Object.keys(datas).length
+    for(let i = 0; i < totalData; i++){
+        values.push(Object.values(datas)[i])
+        updates.push(`${Object.keys(datas)[i]} = $${i + 1}`)
+    }
+    values.push(id_order)
+    const sql = `update coffeshop.order set ${updates.join(", ")} where id_user = $${values.length}`
+    return db.query(sql, values)
 }
 
 const del = (id_order) => {
+    const value = [id_order]
     const sql = "delete from coffeshop.order where id_order = $1"
-    return db.query(sql, id_order)
+    return db.query(sql, value)
 }
 
 module.exports = {

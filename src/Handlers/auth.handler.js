@@ -2,6 +2,7 @@ const argon = require("argon2")
 const jwt = require("jsonwebtoken")
 const {jwtKey} = require("../Configs/environment")
 const {create, login} = require("../Models/auth.models")
+const {data} = require("../Models/user.models")
 
 const createUser = async (req, res) => {
     try {
@@ -17,7 +18,6 @@ const createUser = async (req, res) => {
             }
         })
     } catch (error) {
-        console.log(error)
         res.status(500).json({
             msg: "Internal server error"
         })

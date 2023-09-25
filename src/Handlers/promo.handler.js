@@ -30,11 +30,19 @@ const createData = async (req, res) => {
 
 const updateData = async (req, res) => {
     try {
-        const {discount} = req.body
+        const datas = req.body
         const {id_promo} = req.params
-        await update(discount, id_promo)
-        res.status(201).json({
-            msg: "Berhasil"
+        await update(datas, id_promo)
+        const Result = await data()
+        for(let i = 0; i < (Result.rows).length; i++){
+            if(Result.rows[i].id_promo == id_promo){
+                return res.status(201).json({
+                    msg: `Data promo dengan id ${id_promo} berhasil diubah`,
+                })
+            }
+        }
+        res.status(400).json({
+            msg: "ID promo tidak ditemukan"
         })
     } catch (error) {
         res.status(500).json({
@@ -47,8 +55,16 @@ const delData = async (req, res) => {
     try {
         const {id_promo} = req.params
         await del(id_promo)
-        res.status(200).json({
-            msg: "Berhasil"
+        const Result = await data()
+        for(let i = 0; i < (Result.rows).length; i++){
+            if(Result.rows[i].id_promo == id_promo){
+                return res.status(201).json({
+                    msg: `Data promo dengan id ${id_promo} berhasil dihapus`,
+                })
+            }
+        }
+        res.status(400).json({
+            msg: "ID promo tidak ditemukan"
         })
     } catch (error) {
         msg: "Error"

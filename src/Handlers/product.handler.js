@@ -19,8 +19,8 @@ const getData = async (req, res) => {
             page: parseInt(page),
             totalPage,
             totalData,
-            next: isLastPage ? null : "next page",
-            prev: page == 1 ? null : "prev page"
+            next: isLastPage ? null : `/product?page=${parseInt(page) + 1}&perPage=${perPage}`,
+            prev: page == 1 ? null : `/product?page=${parseInt(page) - 1}&perPage=${perPage}`
         }
 
         res.status(200).json({
@@ -61,7 +61,7 @@ const updateData = async (req, res) => {
         }
 
         res.status(201).json({
-            msg: `Stock produk dengan id ${id_product} berhasil diubah`
+            msg: `Produk dengan id ${id_product} berhasil diubah`
         })
     } catch (error) {
         console.log(error)
