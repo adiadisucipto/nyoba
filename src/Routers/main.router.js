@@ -7,29 +7,16 @@ const promoRouter = require("./promo.router")
 const orderRouter = require("./order.router")
 const productRouter = require("./product.router")
 const authRouter = require("./auth.router")
+const uploadRouter = require("./upload.router")
 
 const {isLogin} = require("../Middleware/authorization")
-const {upload} = require("../Middleware/diskUpload")
 
-mainRouter.use("/user", isLogin, userRouter)
+mainRouter.use("/user", userRouter)
 mainRouter.use("/promo", promoRouter)
 mainRouter.use("/order", orderRouter)
 mainRouter.use("/product", productRouter)
 mainRouter.use("/auth", authRouter)
-
-mainRouter.post("/upload", upload, (req, res) => {
-    console.log(req.file)
-    res.status(500).json({
-        msg: "FIle berhasil diunggah"
-    })
-})
-
-mainRouter.patch("/upload", upload, (req, res) => {
-    console.log(req.file)
-    res.status(500).json({
-        msg: "FIle berhasil diunggah"
-    })
-})
+mainRouter.use("/upload", uploadRouter)
 
 mainRouter.use((err, req, res, next) => {
     if (err instanceof multer.MulterError){

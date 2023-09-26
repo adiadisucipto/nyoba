@@ -1,3 +1,4 @@
+const argon = require("argon2")
 const {data, insert, update, del, count} = require("../Models/user.models")
 
 const getData = async (req, res) => {
@@ -39,9 +40,9 @@ const getData = async (req, res) => {
 
 const createData = async (req, res) => {
     try {
-        const {full_name, email, phone, password} = req.body
-        const result = await insert(full_name, email, phone, password)
-        console.log(result)
+        const {full_name, email, phone, password, user_role} = req.body
+        const userpass = await argon.hash(password)
+        const result = await insert(full_name, email, phone, userpass, user_role)
         res.status(201).json({
             msg: `Pengguna dengan id ${result.rows[0].id_user} dan nama ${full_name} berhasil ditambahkan`,
             result: result.rows[0]

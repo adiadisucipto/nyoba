@@ -7,9 +7,9 @@ const data = (page = 1, perPage = 5) => {
     return db.query(sql, value)
 }
 
-const insert = (full_name, email, phone, password) => {
-    const value = [full_name, email, phone, password]
-    const sql = `insert into coffeshop.user (full_name, email, phone, password) values ($1, $2, $3, $4) returning id_user`
+const insert = (full_name, email, phone, userpass, user_role) => {
+    const value = [full_name, email, phone, userpass, user_role]
+    const sql = `insert into coffeshop.user (full_name, email, phone, userpass, user_role) values ($1, $2, $3, $4, $5) returning id_user`
     return db.query(sql, value)
 }
 

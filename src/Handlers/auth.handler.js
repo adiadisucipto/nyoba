@@ -6,9 +6,9 @@ const {data} = require("../Models/user.models")
 
 const createUser = async (req, res) => {
     try {
-        const {full_name, email, phone, password} = req.body
+        const {full_name, email, phone, password, user_role} = req.body
         const userpass = await argon.hash(password)
-        await create(full_name, email, phone, userpass)
+        await create(full_name, email, phone, userpass, user_role)
         res.status(201).json({
             msg: "User berhasil ditambahkan",
             data: {
@@ -35,7 +35,7 @@ const loginUser = async (req, res) => {
         const {full_name, userpass, user_role} = result.rows[0]
         const isValid = await argon.verify(userpass, password)
         if(!isValid) return res.status(500).json({
-            msg: `Password salah`
+            msg: "Password salah"
         })
         const payload = {
             full_name,

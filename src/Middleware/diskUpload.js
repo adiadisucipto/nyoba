@@ -15,7 +15,7 @@ const storage = multer.diskStorage({
 const diskUp = multer({
     storage,
     limits: {
-        fileSize: 1
+        fileSize: 2e6
     },
     fileFilter: (req, file, cb) => {
         if(path.extname(file.originalname) !== '.jpg'){

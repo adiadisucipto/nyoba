@@ -33,7 +33,7 @@ const userRole = (req, res, next) => {
     const token = bearerToken.split(" ")[1]
     jwt.verify(token, jwtKey, issuer, (err, decode) => {
         const role = decode.user_role
-        if(role === 'admin') return next()
+        if(role == 'admin') return next()
         res.status(400).json({msg: "Hanya admin yang dapat mengakses"})
     })
 }

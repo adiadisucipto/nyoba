@@ -1,3 +1,4 @@
+
 const {data, create, update, del, sort, sortTime, count} = require("../Models/product.models")
 
 const getData = async (req, res) => {
@@ -38,8 +39,8 @@ const getData = async (req, res) => {
 
 const createData = async (req, res) => {
     try {
-        const {image, product_name, description, stock, category} = req.body
-        await create(image, product_name, description, stock, category)
+        const {product_name, description, stock, category} = req.body
+        await create(product_name, description, stock, category)
         res.status(201).json({
             msg: `${product_name} berhasil ditambahkan`
         })
